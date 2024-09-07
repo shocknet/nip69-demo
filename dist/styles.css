@@ -183,3 +183,18 @@ hr {
     display: flex;
     justify-content: flex-end;
 }
+
+.implement-spec {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.implement-spec a {
+    color: #61dafb;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.implement-spec a:hover {
+    text-decoration: underline;
+}
