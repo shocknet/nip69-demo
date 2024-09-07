@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <p id="error" style="color:red"></p>
+    <div>
+        <label for="offer">Offer:</label>
+        <input type="text" id="offer" name="offer">
+    </div>
+    <div>
+        <label for="price">Price:</label>
+        <input type="text" id="price" name="price">
+    </div>
+    <div>
+        <label for="priceType">Price Type:</label>
+        <input type="text" id="priceType" name="priceType">
+    </div>
+    <div>
+        <label for="pubkey">Pubkey:</label>
+        <input type="text" id="pubkey" name="pubkey">
+    </div>
+    <div>
+        <label for="relay">Relay:</label>
+        <input type="text" id="relay" name="relay">
+    </div>
+    <button onclick="encode()">Submit</button>
+    <p id="encoded"></p>
+    <hr />
+    <label for="noffer">Noffer:</label>
+    <input type="text" id="noffer" name="noffer">
+    <button onclick="decode()">Decode</button>
+    <div id="decodedContainer">
+    </div>
+    <script src="bundle.js"></script>
+    <script>
+        function encode() {
+            const offer = document.getElementById('offer').value;
+            const price = document.getElementById('price').value;
+            const priceType = document.getElementById('priceType').value;
+            const pubkey = document.getElementById('pubkey').value;
+            const relay = document.getElementById('relay').value;
+            const noffer = encodeNoffer({ offer, pubkey, relay, price: Number(price), priceType: Number(priceType) });
+            console.log(noffer);
+            document.getElementById('encoded').innerHTML = noffer;
+        }
+        async function decode() {
+            const err = document.getElementById('error');
+            const noffer = document.getElementById('noffer').value;
+            let decoded
+            let wrapSend
+            try {
+                const { offer, send } = await decodeInput(noffer);
+                decoded = offer;
+                wrapSend = send;
+            } catch (e) {
+                err.innerHTML = e.message;
+                return;
+            }
+            console.log(decoded);
+            const container = document.getElementById('decodedContainer');
+
+            for (const key in decoded) {
+                const v = decoded[key];
+                if (v === undefined) {
+                    continue
+                }
+                const p = document.createElement('p');
+                p.innerHTML = `${key}: ${v}`;
+                container.appendChild(p);
+            }
+
+            if (decoded.priceType === 2) {
+                const amount = document.createElement('input');
+                amount.type = 'number';
+                amount.id = 'amount';
+                amount.name = 'amount';
+                container.appendChild(amount);
+                const submitAmountButton = document.createElement('button');
+                submitAmountButton.innerHTML = 'Request Invoice';
+                submitAmountButton.onclick = submitAmount;
+                container.appendChild(submitAmountButton);
+
+                async function submitAmount() {
+                    const amount = document.getElementById('amount').value;
+                    if (!amount) {
+                        err.innerHTML = 'Amount is required';
+                        return;
+                    }
+                    const resWithAmount = await wrapSend(Number(amount));
+                    console.log({ resWithAmount })
+                    err.innerHTML = resWithAmount.error || "";
+                    const childElement = document.createElement('p');
+                    childElement.innerHTML = resWithAmount.bolt11;
+                    container.appendChild(childElement);
+
+                }
+            } else {
+                const res = await wrapSend();
+                console.log({ res })
+                err.innerHTML = resWithAmount.error || "";
+                const childElement = document.createElement('p');
+                childElement.innerHTML = resWithAmount.bolt11;
+                container.appendChild(childElement);
+            }
+        }
+    </script>
+</body>
+
+</html>
