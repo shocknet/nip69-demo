@@ -103,9 +103,9 @@
             } else {
                 const res = await wrapSend();
                 console.log({ res })
-                err.innerHTML = resWithAmount.error || "";
+                err.innerHTML = res.error || "";
                 const childElement = document.createElement('p');
-                childElement.innerHTML = resWithAmount.bolt11;
+                childElement.innerHTML = res.bolt11;
                 container.appendChild(childElement);
             }
         }
