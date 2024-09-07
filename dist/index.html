@@ -4,56 +4,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>NIP-69 Demo Client</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #61dafb;
+        }
+
+        .container {
+            background-color: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #61dafb;
+        }
+
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            background-color: #3a3a3a;
+            border: 1px solid #4a4a4a;
+            color: #e0e0e0;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #61dafb;
+            color: #1e1e1e;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #4fa8d5;
+        }
+
+        #error {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+
+        #encoded, #decodedContainer {
+            background-color: #3a3a3a;
+            padding: 10px;
+            border-radius: 4px;
+            word-wrap: break-word;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #4a4a4a;
+            margin: 20px 0;
+        }
+    </style>
 </head>
 
 <body>
-    <p id="error" style="color:red"></p>
-    <div>
-        <label for="offer">Offer:</label>
-        <input type="text" id="offer" name="offer">
+    <h1>NIP-69 Demo Client</h1>
+    
+    <!-- Encoder section -->
+    <div class="container">
+        <h2>Encode Noffer</h2>
+        <p id="error" style="color:red"></p>
+        <!-- Input fields for noffer encoding -->
+        <div>
+            <label for="offer">Give it an ID:</label>
+            <input type="text" id="offer" name="offer">
+        </div>
+        <div>
+            <label>Price Type:</label>
+            <button onclick="setPriceType(0)">Fixed Price</button>
+            <button onclick="setPriceType(1)">Variable Price</button>
+            <button onclick="setPriceType(2)">Spontaneous Payments</button>
+        </div>
+        <div id="fixedPriceInput" style="display: none;">
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" required>
+        </div>
+        <div>
+            <label for="pubkey">Pubkey:</label>
+            <input type="text" id="pubkey" name="pubkey">
+        </div>
+        <div>
+            <label for="relay">Relay:</label>
+            <input type="text" id="relay" name="relay">
+        </div>
+        <button onclick="encode()">Submit</button>
+        <p id="encoded"></p>
     </div>
-    <div>
-        <label for="price">Price:</label>
-        <input type="text" id="price" name="price">
+
+    <!-- Decoder section -->
+    <div class="container">
+        <h2>Decode Noffer</h2>
+        <div>
+            <label for="noffer">Noffer:</label>
+            <input type="text" id="noffer" name="noffer">
+        </div>
+        <button onclick="decode()">Decode</button>
+        <div id="decodedContainer">
+        </div>
     </div>
-    <div>
-        <label for="priceType">Price Type:</label>
-        <input type="text" id="priceType" name="priceType">
-    </div>
-    <div>
-        <label for="pubkey">Pubkey:</label>
-        <input type="text" id="pubkey" name="pubkey">
-    </div>
-    <div>
-        <label for="relay">Relay:</label>
-        <input type="text" id="relay" name="relay">
-    </div>
-    <button onclick="encode()">Submit</button>
-    <p id="encoded"></p>
-    <hr />
-    <label for="noffer">Noffer:</label>
-    <input type="text" id="noffer" name="noffer">
-    <button onclick="decode()">Decode</button>
-    <div id="decodedContainer">
-    </div>
+
     <script src="bundle.js"></script>
     <script>
+        let currentPriceType = null;
+
+        function setPriceType(type) {
+            currentPriceType = type;
+            const fixedPriceInput = document.getElementById('fixedPriceInput');
+            fixedPriceInput.style.display = type === 0 ? 'block' : 'none';
+        }
+
+        // Encode noffer from input fields
         function encode() {
             const offer = document.getElementById('offer').value;
-            const price = document.getElementById('price').value;
-            const priceType = document.getElementById('priceType').value;
             const pubkey = document.getElementById('pubkey').value;
             const relay = document.getElementById('relay').value;
-            const noffer = encodeNoffer({ offer, pubkey, relay, price: Number(price), priceType: Number(priceType) });
+
+            if (currentPriceType === null) {
+                document.getElementById('error').innerHTML = 'Please select a price type';
+                return;
+            }
+
+            let price = null;
+            if (currentPriceType === 0) {
+                price = document.getElementById('price').value;
+                if (!price) {
+                    document.getElementById('error').innerHTML = 'Fixed price is required';
+                    return;
+                }
+                price = Number(price);
+            }
+
+            const noffer = encodeNoffer({ offer, pubkey, relay, price, priceType: currentPriceType });
             console.log(noffer);
             document.getElementById('encoded').innerHTML = noffer;
         }
+
+        // Decode noffer and display results
         async function decode() {
             const err = document.getElementById('error');
             const noffer = document.getElementById('noffer').value;
-            let decoded
-            let wrapSend
+            let decoded, wrapSend;
             try {
                 const { offer, send } = await decodeInput(noffer);
                 decoded = offer;
@@ -65,17 +177,21 @@
             console.log(decoded);
             const container = document.getElementById('decodedContainer');
 
+            // Clear previous results
+            container.innerHTML = '';
+
+            // Display decoded noffer details
             for (const key in decoded) {
                 const v = decoded[key];
-                if (v === undefined) {
-                    continue
-                }
+                if (v === undefined) continue;
                 const p = document.createElement('p');
                 p.innerHTML = `${key}: ${v}`;
                 container.appendChild(p);
             }
 
+            // Handle different price types
             if (decoded.priceType === 2) {
+                // For spontaneous payments, allow user to input amount
                 const amount = document.createElement('input');
                 amount.type = 'number';
                 amount.id = 'amount';
@@ -86,6 +202,7 @@
                 submitAmountButton.onclick = submitAmount;
                 container.appendChild(submitAmountButton);
 
+                // Submit user-specified amount and request invoice
                 async function submitAmount() {
                     const amount = document.getElementById('amount').value;
                     if (!amount) {
@@ -98,15 +215,22 @@
                     const childElement = document.createElement('p');
                     childElement.innerHTML = resWithAmount.bolt11;
                     container.appendChild(childElement);
-
                 }
             } else {
-                const res = await wrapSend();
-                console.log({ res })
-                err.innerHTML = resWithAmount.error || "";
-                const childElement = document.createElement('p');
-                childElement.innerHTML = resWithAmount.bolt11;
-                container.appendChild(childElement);
+                // For fixed price (0) or variable price (1), directly request invoice
+                const requestInvoiceButton = document.createElement('button');
+                requestInvoiceButton.innerHTML = 'Request Invoice';
+                requestInvoiceButton.onclick = requestInvoice;
+                container.appendChild(requestInvoiceButton);
+
+                async function requestInvoice() {
+                    const res = await wrapSend();
+                    console.log({ res })
+                    err.innerHTML = res.error || "";
+                    const childElement = document.createElement('p');
+                    childElement.innerHTML = res.bolt11;
+                    container.appendChild(childElement);
+                }
             }
         }
     </script>
