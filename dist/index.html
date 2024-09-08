@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NIP-69 Demo Client</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="fav.png">
 </head>
 
 <body>
@@ -24,7 +25,7 @@
         <p id="lnurlError" style="color:red"></p>
         <div>
             <label for="lightningAddress">Lightning Address:</label>
-            <input type="text" id="lightningAddress" name="lightningAddress" placeholder="username@domain.tld">
+            <input type="text" id="lightningAddress" name="lightningAddress" placeholder="expresstent16@shockwallet.app">
         </div>
         <div class="button-right">
             <button onclick="checkLightningAddress()">Check</button>
@@ -39,7 +40,7 @@
         <p id="decodeError" style="color:red"></p>
         <div>
             <label for="noffer">Noffer code:</label>
-            <input type="text" id="noffer" name="noffer" placeholder="noffer1qqswxpkytms203mj2s83mjytqrme6tfezzlagpr7jyzcfxvda8y790sprfmhxue69uhhxarjvee8jtnndphkx6ewdejhgam0wf4syspexqcrwvpexasngdpjxajkyd33x93rsefkv33n2cmr8y6rzvmyx5exvvnyx33xzdryxvmxxvmyxdjnjcfjvyerwvpevyenjcm9v4jkyqcpqg5xyqn5">
+            <input type="text" id="noffer" name="noffer" placeholder="noffer1qqs8dm297qxw57avt8vdpd7jqjzg75ce67ukc9q0ldhuh24tpgfagnsprfmhxue69uhhxarjvee8jtnndphkx6ewdejhgam0wf4sysrpx3jkgvpevc6njdps8yurvwp4vgckydmzxscxydn9vvenzer9xc6rzcnpv93ngdfsvcmkyvesvejnvefexenrqe3exvmnsvp3xqcrqqcpqguz7fc0">
         </div>
         <div class="button-right">
             <button onclick="decode()">Decode</button>
@@ -267,11 +268,9 @@
         async function checkLightningAddress() {
             const lnurlErr = document.getElementById('lnurlError');
             const lnurlResult = document.getElementById('lnurlResult');
-            const lightningAddress = document.getElementById('lightningAddress').value;
-
+            let lightningAddress = document.getElementById('lightningAddress').value;
             if (!lightningAddress) {
-                lnurlErr.innerHTML = 'Lightning address is required';
-                return;
+                lightningAddress = document.getElementById('lightningAddress').placeholder;
             }
 
             const [username, domain] = lightningAddress.split('@');
