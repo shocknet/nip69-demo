@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIP-68 Demo Client</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/png" href="fav.png">
+</head>
+
+<body>
+    <h1>NIP-68 Demo Client</h1>
+
+    <!-- GitHub Banner -->
+    <div class="github-banner">
+        <a href="https://github.com/shocknet/nip69-demo" target="_blank">
+            <img src="https://img.shields.io/badge/View%20the%20code%20on-GitHub-blue" alt="View the code on GitHub">
+        </a>
+    </div>
+
+    <!-- Decoder section -->
+    <div class="container">
+        <h2>Decode Debit</h2>
+        <p id="decodeError" style="color:red"></p>
+        <div>
+            <label for="ndebit">Ndebit code:</label>
+            <input type="text" id="ndebit" name="ndebit" placeholder="...">
+        </div>
+        <div class="button-right">
+            <button onclick="decode()">Decode</button>
+        </div>
+        <div id="decodedContainer">
+        </div>
+    </div>
+
+    <!-- Implement the spec link -->
+    <div class="implement-spec">
+        <a href="https://github.com/nostr-protocol/nips/pull/1460/" target="_blank">Implement the spec →</a>
+    </div>
+
+    <script src="bundle.js"></script>
+    <script>
+        console.log(encodeNdebit({
+            pubkey: "e306c45ee0a7c772540f1dc88b00f79d2d3910bfd4047e910584998de9c9e2be",
+            relay: "wss://strfry.shock.network",
+            pointerId: "782ad5e5e65b034cb3151da9b440cfdcee78b01347f81681190b1139e3fb7eac"
+        }))
+        let currentPriceType = null;
+
+        function setPriceType(type) {
+            currentPriceType = type;
+            const fixedPriceInput = document.getElementById('fixedPriceInput');
+            fixedPriceInput.style.display = type === 0 ? 'block' : 'none';
+
+            // Remove 'selected' class from all buttons
+            document.getElementById('fixedPriceButton').classList.remove('selected');
+            document.getElementById('variablePriceButton').classList.remove('selected');
+            document.getElementById('spontaneousPaymentsButton').classList.remove('selected');
+
+            // Add 'selected' class to the clicked button
+            if (type === 0) {
+                document.getElementById('fixedPriceButton').classList.add('selected');
+            } else if (type === 1) {
+                document.getElementById('variablePriceButton').classList.add('selected');
+            } else if (type === 2) {
+                document.getElementById('spontaneousPaymentsButton').classList.add('selected');
+            }
+        }
+
+        // Encode offer from input fields
+        function encode() {
+            const encodeErr = document.getElementById('encodeError');
+            const offer = document.getElementById('offer').value;
+            const pubkey = document.getElementById('pubkey').value;
+            const relay = document.getElementById('relay').value;
+
+            if (currentPriceType === null) {
+                encodeErr.innerHTML = 'Please select a price type';
+                return;
+            }
+
+            let price = null;
+            if (currentPriceType === 0) {
+                price = document.getElementById('price').value;
+                if (!price) {
+                    encodeErr.innerHTML = 'Fixed price is required';
+                    return;
+                }
+                price = Number(price);
+            }
+
+            const noffer = encodeNoffer({ offer, pubkey, relay, price, priceType: currentPriceType });
+            console.log(noffer);
+            document.getElementById('encoded').innerHTML = noffer;
+            document.querySelector('.copy-icon').style.display = noffer ? 'inline' : 'none';
+        }
+
+        // Decode noffer and display results
+        async function decode() {
+            const decodeErr = document.getElementById('decodeError');
+            const err = document.getElementById('error');
+            let noffer = document.getElementById('ndebit').value;
+            if (!noffer) {
+                noffer = document.getElementById('ndebit').placeholder;
+            }
+            let decoded, wrapSend;
+            try {
+                const { debit, send } = await decodeNdebitInput(noffer);
+                decoded = debit;
+                wrapSend = send;
+            } catch (e) {
+                decodeErr.innerHTML = e.message;
+                return;
+            }
+            console.log(decoded);
+            const container = document.getElementById('decodedContainer');
+
+            // Clear previous results
+            container.innerHTML = '';
+
+            // Display decoded noffer details
+            const decodedDetails = document.createElement('div');
+            decodedDetails.className = 'decoded-details';
+            for (const key in decoded) {
+                const v = decoded[key];
+                if (v === undefined) continue;
+                const p = document.createElement('p');
+                p.innerHTML = `${key}: ${v}`;
+                decodedDetails.appendChild(p);
+            }
+            container.appendChild(decodedDetails);
+
+            // Add separator
+            const separator = document.createElement('hr');
+            container.appendChild(separator);
+
+            // Create a new container for invoice request
+            const invoiceRequestContainer = document.createElement('div');
+            invoiceRequestContainer.className = 'invoice-request-container';
+
+            // For spontaneous payments, allow user to input amount
+            const inputGroup = document.createElement('div');
+            inputGroup.className = 'input-group';
+
+            const amountLabel = document.createElement('label');
+            amountLabel.htmlFor = 'invoice_input';
+            amountLabel.textContent = 'Invoice:';
+            inputGroup.appendChild(amountLabel);
+
+            const invoice = document.createElement('input');
+            invoice.type = 'text';
+            invoice.id = 'invoice_input';
+            invoice.name = 'invoice_input';
+            invoice.placeholder = 'Enter invoice';
+            inputGroup.appendChild(invoice);
+
+            const submitInvoiceButton = document.createElement('button');
+            submitInvoiceButton.innerHTML = 'Request Invoice Payment';
+            submitInvoiceButton.onclick = submitAmount;
+            inputGroup.appendChild(submitInvoiceButton);
+            const submitRecurringButton = document.createElement('button');
+            submitRecurringButton.innerHTML = 'Request Recurring 1000 / 1day';
+            submitRecurringButton.onclick = submitRecurring;
+            inputGroup.appendChild(submitRecurringButton);
+
+            invoiceRequestContainer.appendChild(inputGroup);
+
+            // Submit user-specified amount and request invoice
+            async function submitAmount() {
+                const invoice = document.getElementById('invoice_input').value;
+                if (!invoice) {
+                    decodeErr.innerHTML = 'invoice is required';
+                    return;
+                }
+                const res = await wrapSend({ bolt11: invoice });
+                console.log({ res })
+                decodeErr.innerHTML = res.error || "";
+                const childElement = document.createElement('p');
+                childElement.innerHTML = res.preimage;
+                invoiceRequestContainer.appendChild(childElement);
+            }
+            async function submitRecurring() {
+                const res = await wrapSend({ frequency: { number: 1, unit: 'day' } });
+                console.log({ res })
+                decodeErr.innerHTML = res.error || "";
+                const childElement = document.createElement('p');
+                childElement.innerHTML = res.preimage;
+                invoiceRequestContainer.appendChild(childElement);
+            }
+
+            container.appendChild(invoiceRequestContainer);
+        }
+
+        function ensureWssPrefix(input) {
+            if (!input.value.startsWith('wss://')) {
+                input.value = 'wss://' + input.value.replace(/^wss?:\/\//, '');
+            }
+        }
+
+        function copyToClipboard() {
+            const encodedText = document.getElementById('encoded').innerText;
+            if (encodedText) {
+                navigator.clipboard.writeText(encodedText).then(() => {
+                    alert('Copied to clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy: ', err);
+                });
+            }
+        }
+
+        async function checkLightningAddress() {
+            const lnurlErr = document.getElementById('lnurlError');
+            const lnurlResult = document.getElementById('lnurlResult');
+            let lightningAddress = document.getElementById('lightningAddress').value;
+            if (!lightningAddress) {
+                lightningAddress = document.getElementById('lightningAddress').placeholder;
+            }
+
+            const [username, domain] = lightningAddress.split('@');
+            if (!username || !domain) {
+                lnurlErr.innerHTML = 'Invalid lightning address format';
+                return;
+            }
+
+            const lnurl = `https://${domain}/.well-known/lnurlp/${username}`;
+            try {
+                const response = await fetch(lnurl);
+                const data = await response.json();
+
+                if (data.nip69) {
+                    lnurlResult.innerHTML = `This address supports NIP-69: ${data.nip69}`;
+                    document.getElementById('noffer').value = data.nip69;
+                } else {
+                    lnurlResult.innerHTML = 'This address does not support NIP-69';
+                }
+            } catch (e) {
+                lnurlErr.innerHTML = 'Failed to fetch LNURL data';
+            }
+        }
+
+        //document.querySelector('.copy-icon').style.display = 'none';
+    </script>
+</body>
+
+</html>
