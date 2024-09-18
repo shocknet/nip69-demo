@@ -1,0 +1,200 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    line-height: 1.6;
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+h1 {
+    text-align: center;
+    color: #61dafb;
+}
+
+.github-banner {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.github-banner a {
+    margin: 0 10px;
+}
+
+.container {
+    background-color: #2a2a2a;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #61dafb;
+}
+
+input[type="text"], input[type="number"] {
+    width: calc(100% - 16px);
+    padding: 8px;
+    margin-bottom: 10px;
+    background-color: #3a3a3a;
+    border: 1px solid #4a4a4a;
+    color: #e0e0e0;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #61dafb;
+    color: #1e1e1e;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #4fa8d5;
+}
+
+.selected {
+    background-color: #4fa8d5;
+    color: #ffffff;
+}
+
+#error {
+    color: #ff6b6b;
+    margin-bottom: 10px;
+}
+
+#encoded, #decodedContainer, #lnurlResult {
+    background-color: #3a3a3a;
+    padding: 10px;
+    border-radius: 4px;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #4a4a4a;
+    margin: 20px 0;
+}
+
+.button-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.button-group button {
+    flex: 1;
+    min-width: 120px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.input-group label {
+    flex: 0 0 100px;
+    margin-bottom: 0;
+}
+
+.input-group input {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+#amount {
+    margin-right: 10px;
+}
+
+@media (max-width: 600px) {
+    .input-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .input-group label {
+        margin-bottom: 5px;
+    }
+}
+
+.copy-icon {
+    cursor: pointer;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
+.copy-icon:hover {
+    opacity: 0.7;
+}
+
+#encoded-container {
+    display: flex;
+    align-items: center;
+}
+
+#encoded {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+.decoded-details p {
+    margin: 5px 0;
+}
+
+.invoice-request {
+    margin-top: 20px;
+}
+
+.invoice-request p {
+    margin: 10px 0;
+}
+
+.input-group {
+    margin-bottom: 10px;
+}
+
+.input-group label {
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    margin-bottom: 5px;
+}
+
+.invoice-request-container {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #4a4a4a;
+}
+
+.button-right {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.implement-spec {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.implement-spec a {
+    color: #61dafb;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.implement-spec a:hover {
+    text-decoration: underline;
+}
