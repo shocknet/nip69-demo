@@ -10,15 +10,15 @@ export const utf8Encoder = new TextEncoder()
 export type DebitPointer = {
     pubkey: string,
     relay: string,
-    pointerId?: string,
+    pointer?: string,
 }
 export const encodeNdebit = (debit: DebitPointer): string => {
     const o: TLV = {
         0: [hexToBytes(debit.pubkey)],
         1: [utf8Encoder.encode(debit.relay)],
     }
-    if (debit.pointerId) {
-        o[2] = [utf8Encoder.encode(debit.pointerId)]
+    if (debit.pointer) {
+        o[2] = [utf8Encoder.encode(debit.pointer)]
     }
     const data = encodeTLV(o);
     const words = bech32.toWords(data)
@@ -39,7 +39,7 @@ export const decodeNdebit = (noffer: string): DebitPointer => {
     return {
         pubkey: bytesToHex(tlv[0][0]),
         relay: utf8Decoder.decode(tlv[1][0]),
-        pointerId: tlv[2] ? utf8Decoder.decode(tlv[2][0]) : undefined
+        pointer: tlv[2] ? utf8Decoder.decode(tlv[2][0]) : undefined
     }
 }
 
