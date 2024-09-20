@@ -181,7 +181,7 @@
                 invoiceRequestContainer.appendChild(childElement);
             }
             async function submitRecurring() {
-                const res = await wrapSend({ frequency: { number: 1, unit: 'day' } });
+                const res = await wrapSend({ frequency: { number: 1, unit: 'day' }, amount_sats: 1000 });
                 console.log({ res })
                 decodeErr.innerHTML = res.error || "";
                 const childElement = document.createElement('p');

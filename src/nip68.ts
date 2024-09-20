@@ -60,7 +60,7 @@ export const decodeNdebitInput = async (input: string) => {
 (window as any).decodeNdebitInput = decodeNdebitInput
 
 type RecurringDebitTimeUnit = 'day' | 'week' | 'month'
-type RecurringDebit = { frequency: { number: number, unit: RecurringDebitTimeUnit } }
+type RecurringDebit = { frequency: { number: number, unit: RecurringDebitTimeUnit }, amount_sats: number }
 export type NdebitData = { pointer?: string, amount_sats: number } & (RecurringDebit | { bolt11: string })
 export type NdebitSuccess = { res: 'ok' }
 export type NdebitSuccessPayment = { res: 'ok', preimage: string }
