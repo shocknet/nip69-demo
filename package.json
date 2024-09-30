@@ -18,7 +18,7 @@
     "typescript": "^5.5.4",
     "webpack": "^5.94.0",
     "webpack-cli": "^5.1.4",
-    "nostr-tools": "github:shocknet/nostr-tools#7c404b4ef0aa62f47de2c97218d6c3ad4e9aa530"
+    "nostr-tools": "github:shocknet/nostr-tools#ef16463592e2f7b5bf18abc86ff974615d64bb7d"
   },
   "dependencies": {
     "@noble/curves": "^1.6.0",
