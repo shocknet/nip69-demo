@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer';
-import { Event, generateSecretKey, SimplePool, nip69, nip19, getPublicKey, finalizeEvent, nip44 } from 'nostr-tools'
+import { Event, generateSecretKey, SimplePool, nip69, nip19, getPublicKey, finalizeEvent, nip44, UnsignedEvent } from 'nostr-tools'
 import { SubCloser } from 'nostr-tools/lib/types/abstract-pool'
 
 (window as any).encodeNoffer = nip19.nofferEncode
@@ -42,4 +42,19 @@ if (secret) {
     privateKey = generateSecretKey()
     localStorage.setItem("nostr_secret", Buffer.from(privateKey).toString("hex"))
 }
-const wrapSend = (offer: nip19.OfferPointer) => (amt?: number, zap?: string) => nip69.SendNofferRequest(pool, privateKey, [offer.relay], offer.pubkey, { offer: offer.offer, amount: amt, zap })
+const getZap = (to: string, relay: string, amt?: number) => {
+    const zap: UnsignedEvent = {
+        created_at: Math.floor(Date.now() / 1000),
+        kind: 9734,
+        tags: [
+            ["p", to],
+            ["relays", relay]
+        ],
+        content: "",
+        pubkey: getPublicKey(privateKey)
+    }
+    if (amt) zap.tags.push(["amount", amt.toString()])
+    const j = finalizeEvent(zap, privateKey)
+    return JSON.stringify(j)
+}
+const wrapSend = (offer: nip19.OfferPointer) => (amt?: number) => nip69.SendNofferRequest(pool, privateKey, [offer.relay], offer.pubkey, { offer: offer.offer, amount: amt, zap: getZap(offer.pubkey, offer.relay, amt) })
