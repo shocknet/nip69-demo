@@ -193,7 +193,12 @@
             // Create a new container for invoice request
             const invoiceRequestContainer = document.createElement('div');
             invoiceRequestContainer.className = 'invoice-request-container';
-
+            const zap = document.createElement('input');
+            zap.type = 'text';
+            zap.id = 'zap';
+            zap.name = 'zap';
+            zap.placeholder = 'Enter zap (optional)';
+            inputGroup.appendChild(zap);
             // Handle different price types
             if (decoded.priceType === 2) {
                 // For spontaneous payments, allow user to input amount
@@ -226,7 +231,8 @@
                         decodeErr.innerHTML = 'Amount is required';
                         return;
                     }
-                    const resWithAmount = await wrapSend(Number(amount));
+                    const zap = document.getElementById('zap').value;
+                    const resWithAmount = await wrapSend(Number(amount), zap || undefined);
                     console.log({ resWithAmount })
                     decodeErr.innerHTML = resWithAmount.error || "";
                     const childElement = document.createElement('p');
@@ -241,7 +247,8 @@
                 invoiceRequestContainer.appendChild(requestInvoiceButton);
 
                 async function requestInvoice() {
-                    const res = await wrapSend();
+                    const zap = document.getElementById('zap').value;
+                    const res = await wrapSend(undefined, zap || undefined);
                     console.log({ res })
                     decodeErr.innerHTML = res.error || "";
                     const childElement = document.createElement('p');
