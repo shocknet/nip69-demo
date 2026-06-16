@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "cp src/favicon.png src/clink-logo.svg src/clink-avatar.svg dist/ 2>/dev/null; webpack serve",
-    "build": "webpack --mode production && cp src/nav.js dist/nav.js && cp src/nav.html dist/nav.html && cp src/favicon.png src/clink-logo.svg src/clink-avatar.svg dist/"
+    "start": "cp src/favicon.png src/clink-logo.svg src/clink-avatar.svg src/CLINK_dark.svg src/CLINK_light.svg dist/ 2>/dev/null; webpack serve",
+    "build": "webpack --mode production && cp src/nav.js dist/nav.js && cp src/nav.html dist/nav.html && cp src/favicon.png src/clink-logo.svg src/clink-avatar.svg src/CLINK_dark.svg src/CLINK_light.svg dist/"
   },
   "keywords": [],
   "author": "",

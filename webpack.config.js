@@ -34,7 +34,7 @@ module.exports = (env, argv) => {
             filename: '[name].js',
             path: path.resolve(__dirname, 'dist'),
             clean: {
-                keep: /(favicon\.png|clinkmedev-og-card\.png)$/,
+                keep: /(favicon\.png|clinkmedev-og-card\.png|CLINK_(dark|light)\.svg)$/,
             },
         },
         resolve: {
