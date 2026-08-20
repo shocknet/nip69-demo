@@ -52,7 +52,7 @@
             <hr>
             <h2>Generate a Lightning Invoice from an Offer</h2>
             <p>Paste a <code>noffer</code> string to request a BOLT 11 invoice from a provider. This demonstrates how a client (like a website or mobile app) can ask a server (like your node) for an invoice in a standardized way.</p>
-            <p>This demo is built with the <a href="https://www.npmjs.com/package/@shocknet/clink-sdk" target="_blank" rel="noopener noreferrer">CLINK SDK</a>, and the source is available on <a href="https://github.com/shocknet/clink-demo" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
+            <p>This demo is built with the <a href="https://github.com/shocknet/ClinkSDK" target="_blank" rel="noopener noreferrer">CLINK SDK</a> (<code>sdk.Noffer</code>, including the payment receipt callback). Source is on <a href="https://github.com/shocknet/clink-demo" target="_blank" rel="noopener noreferrer">GitHub</a>.</p>
             <div class="form-group">
                 <label for="nofferInput">Offer String (noffer)</label>
                 <textarea id="nofferInput" placeholder="Try the default noffer below or paste your own..."></textarea>
@@ -60,9 +60,12 @@
             <div class="results-section" id="offer-result-section" style="display: none;">
                 <h3 id="result-header">Result</h3>
                 <pre id="result-data">Decode an offer to see details.</pre>
+                <button type="button" id="copy-invoice" class="copy-invoice" hidden>Copy invoice</button>
                 <div class="qr-code-container" id="qr-container">
                     <span id="qr-placeholder">QR Code will appear here</span>
-                    <canvas id="qrCanvas"></canvas>
+                    <a id="qr-pay-link" class="qr-pay-link" aria-label="Pay invoice">
+                        <canvas id="qrCanvas"></canvas>
+                    </a>
                     <div id="offer-actions" style="display: none;">
                         <div class="form-group">
                             <label for="amountInput">Amount (sats)</label>
@@ -71,6 +74,13 @@
                         <button id="getInvoiceButton">Get Invoice</button>
                     </div>
                 </div>
+                <div id="receipt-status" class="receipt-status" hidden>
+                    <div class="receipt-line"><span id="receipt-label"></span></div>
+                    <span id="receipt-countdown" class="receipt-countdown" hidden></span>
+                </div>
+            </div>
+            <div id="client-identity" style="display: none; margin: 1rem 0; font-size: 0.9rem; opacity: 0.8; text-align: center;">
+                <small>Requesting as: <span id="client-npub"></span></small>
             </div>
             <button id="decodeOfferButton">Decode Offer</button>
         </main>
