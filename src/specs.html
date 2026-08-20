@@ -22,6 +22,8 @@
                     <option value="clink-offers.md">Offers</option>
                     <option value="clink-debits.md">Debits</option>
                     <option value="clink-manage.md">Manage</option>
+                    <option value="clink-enroll.md">Enroll</option>
+                    <option value="clink-beacon.md">Beacon</option>
                 </select>
                 <span id="spec-loading" style="margin-left:1em; color:var(--primary-color); display:none;">Loading…</span>
                 <div id="spec-error" style="color:#F00; margin-top:1em; display:none;"></div>
@@ -38,14 +40,20 @@
     const loading = document.getElementById('spec-loading');
     const error = document.getElementById('spec-error');
 
+    async function fetchSpec(filename) {
+        const resp = await fetch(GITHUB_RAW_BASE + filename);
+        if (!resp.ok) {
+            throw new Error('HTTP ' + resp.status);
+        }
+        return resp.text();
+    }
+
     async function loadSpec(filename) {
         loading.style.display = 'inline';
         error.style.display = 'none';
         content.innerHTML = '';
         try {
-            const resp = await fetch(GITHUB_RAW_BASE + filename);
-            if (!resp.ok) throw new Error('HTTP ' + resp.status);
-            const md = await resp.text();
+            const md = await fetchSpec(filename);
             content.innerHTML = marked.parse(md);
         } catch (e) {
             error.textContent = 'Failed to load spec: ' + (e.message || e);
@@ -55,7 +63,10 @@
         }
     }
     select.addEventListener('change', e => loadSpec(select.value));
-    // Load default spec
+    const requested = new URLSearchParams(location.search).get('spec');
+    if (requested && [...select.options].some(opt => opt.value === requested)) {
+        select.value = requested;
+    }
     loadSpec(select.value);
     </script>
 </body>

@@ -1,10 +1,10 @@
 {
-  "name": "nofferui",
+  "name": "clink-demo",
   "version": "1.0.0",
-  "description": "",
+  "description": "Minimal web demo for the CLINK SDK",
   "main": "index.js",
   "scripts": {
-    "start": "cp src/favicon.png src/clink-logo.svg src/clink-avatar.svg src/CLINK_dark.svg src/CLINK_light.svg dist/ 2>/dev/null; webpack serve",
+    "start": "mkdir -p dist && cp src/nav.js src/nav.html src/favicon.png src/clink-logo.svg src/clink-avatar.svg src/CLINK_dark.svg src/CLINK_light.svg dist/ 2>/dev/null; webpack serve",
     "build": "webpack --mode production && cp src/nav.js dist/nav.js && cp src/nav.html dist/nav.html && cp src/favicon.png src/clink-logo.svg src/clink-avatar.svg src/CLINK_dark.svg src/CLINK_light.svg dist/"
   },
   "keywords": [],
@@ -21,12 +21,7 @@
     "webpack-dev-server": "^5.2.2"
   },
   "dependencies": {
-    "@noble/curves": "^1.6.0",
-    "@noble/hashes": "^1.5.0",
-    "@scure/base": "^1.1.8",
-    "@shocknet/clink-sdk": "^1.3.1",
-    "@stablelib/xchacha20": "^2.0.0",
-    "buffer": "^6.0.3",
+    "@shocknet/clink-sdk": "^1.7.0",
     "html-webpack-plugin": "^5.6.3",
     "qrcode": "^1.5.3",
     "style-loader": "^4.0.0"

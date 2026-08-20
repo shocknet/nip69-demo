@@ -1,41 +1,47 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const glob = require('glob');
+
+const chunksFor = (name) => {
+    switch (name) {
+        case 'offers':
+            return ['offers'];
+        case 'debit':
+            return ['debit'];
+        default:
+            return ['static'];
+    }
+};
+
+const htmlPages = [
+    'index',
+    'offers',
+    'debit',
+    'apps',
+    'specs',
+    'contact',
+];
 
 module.exports = (env, argv) => {
     const isProduction = argv.mode === 'production';
-
-    // Find all HTML files in src
-    const htmlFiles = glob.sync('./src/*.html');
-    const htmlPlugins = htmlFiles.map(file => {
-        const name = path.basename(file, '.html');
-        let chunks = [];
-        if (name === 'index') chunks = ['main', 'utils'];
-        else if (name === 'debit') chunks = ['debit', 'utils'];
-        else if (name === 'offers') chunks = ['main', 'static'];
-        else chunks = ['static'];
-        return new HtmlWebpackPlugin({
-            template: file,
-            filename: path.basename(file),
-            chunks,
-        });
-    });
+    const htmlPlugins = htmlPages.map(name => new HtmlWebpackPlugin({
+        template: `./src/${name}.html`,
+        filename: `${name}.html`,
+        chunks: chunksFor(name),
+    }));
 
     return {
         entry: {
-            utils: './src/utils.ts',
-            main: './src/index.ts',
+            offers: './src/offers.ts',
             debit: './src/debit.ts',
             static: './src/static.ts',
-            manage: './src/manage.ts',
         },
         output: {
             filename: '[name].js',
             path: path.resolve(__dirname, 'dist'),
-            clean: {
-                keep: /(favicon\.png|clinkmedev-og-card\.png|CLINK_(dark|light)\.svg)$/,
-            },
+            clean: isProduction ? {
+                keep: /(favicon\.png|clinkmedev-og-card\.png|CLINK_(dark|light)\.svg|clink-logo\.svg|clink-avatar\.svg|nav\.html|nav\.js)$/,
+            } : false,
         },
         resolve: {
             extensions: ['.ts', '.js']

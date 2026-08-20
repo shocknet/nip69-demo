@@ -47,12 +47,12 @@
             <div class="demo-section">
                 <h2>Pay an Invoice with a CLINK Debit</h2>
                 <p>Paste an <code>ndebit</code> string and a BOLT 11 invoice to authorize a payment from a provider. This demonstrates how a client can request a payment from a server that has been granted permission.</p>
-                <p>You can get an <code>ndebit</code> from a CLINK-compatible wallet like <a href="https://shockwallet.app" target="_blank" rel="noopener noreferrer">ShockWallet</a> to try this feature.</p>
+                <p>You can get an <code>ndebit</code> from a CLINK-compatible wallet like <a href="https://shockwallet.app" target="_blank" rel="noopener noreferrer">ShockWallet</a>, or from <a href="https://github.com/shocknet/clinkctl" target="_blank" rel="noopener noreferrer">clinkctl enroll</a>.</p>
                 <div class="form-group">
                     <label for="ndebitInput">Debit String (ndebit)</label>
                     <textarea id="ndebitInput" placeholder="Paste your ndebit string here..."></textarea>
                 </div>
-                <div class="results-section decoded-data-container">
+                <div id="decoded-data-container" class="results-section decoded-data-container">
                     <h3>Decoded Debit Data</h3>
                     <pre id="decodedDebitData">Decoded data will appear here...</pre>
                 </div>
