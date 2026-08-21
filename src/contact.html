@@ -7,6 +7,49 @@
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="preload" href="styles.css" as="style" onload="this.rel='stylesheet'">
     <link rel="stylesheet" href="styles.css">
+    <style>
+        .contact-list {
+            list-style: none;
+            margin: 1.5rem 0 0;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 0.85rem;
+            max-width: 52rem;
+        }
+        .contact-list li {
+            margin: 0;
+            min-width: 0;
+        }
+        .content-section .contact-list a {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            height: 100%;
+            padding: 1.1rem 1.25rem;
+            background: var(--surface-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-surface);
+            text-decoration: none;
+            color: inherit;
+            box-sizing: border-box;
+        }
+        .content-section .contact-list a:hover {
+            border-color: var(--primary-color);
+            text-decoration: none;
+        }
+        .contact-name {
+            font-family: var(--font-display);
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+        .contact-meta {
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.92rem;
+        }
+    </style>
 </head>
 <body>
     <div id="nav"></div>
@@ -18,28 +61,38 @@
         <main>
             <div class="content-section">
                 <p>Protocol, integration, or the community:</p>
-                <div class="contact-list">
-                    <a class="contact-row" href="https://github.com/shocknet/CLINK/discussions" target="_blank" rel="noopener noreferrer">
-                        <span class="contact-name">GitHub</span>
-                        <span class="contact-meta">Discussions</span>
-                    </a>
-                    <a class="contact-row" href="https://t.me/ShockBTC" target="_blank" rel="noopener noreferrer">
-                        <span class="contact-name">Telegram</span>
-                        <span class="contact-meta">@ShockBTC</span>
-                    </a>
-                    <a class="contact-row" href="https://bxrd.app/npub1xvtwx6tduaxnn9v3y7uasskl277achgu0tu2qncmc7hdsz6y2zyqce64sa" target="_blank" rel="noopener noreferrer">
-                        <span class="contact-name">Nostr</span>
-                        <span class="contact-meta">shocknet_justin</span>
-                    </a>
-                    <a class="contact-row" href="https://twitter.com/ShockBTC" target="_blank" rel="noopener noreferrer">
-                        <span class="contact-name">Twitter</span>
-                        <span class="contact-meta">@ShockBTC</span>
-                    </a>
-                    <a class="contact-row" href="https://stacker.news/search?q=clink" target="_blank" rel="noopener noreferrer">
-                        <span class="contact-name">Stacker News</span>
-                        <span class="contact-meta">CLINK posts</span>
-                    </a>
-                </div>
+                <ul class="contact-list">
+                    <li>
+                        <a href="https://github.com/shocknet/CLINK/discussions" target="_blank" rel="noopener noreferrer">
+                            <span class="contact-name">GitHub</span>
+                            <span class="contact-meta">Discussions</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://t.me/ShockBTC" target="_blank" rel="noopener noreferrer">
+                            <span class="contact-name">Telegram</span>
+                            <span class="contact-meta">@ShockBTC</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://bxrd.app/npub1xvtwx6tduaxnn9v3y7uasskl277achgu0tu2qncmc7hdsz6y2zyqce64sa" target="_blank" rel="noopener noreferrer">
+                            <span class="contact-name">Nostr</span>
+                            <span class="contact-meta">shocknet_justin</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com/ShockBTC" target="_blank" rel="noopener noreferrer">
+                            <span class="contact-name">Twitter</span>
+                            <span class="contact-meta">@ShockBTC</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://stacker.news/search?q=clink" target="_blank" rel="noopener noreferrer">
+                            <span class="contact-name">Stacker News</span>
+                            <span class="contact-meta">CLINK posts</span>
+                        </a>
+                    </li>
+                </ul>
             </div>
         </main>
     </div>
