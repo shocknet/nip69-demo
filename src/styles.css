@@ -904,6 +904,49 @@ main .demo-card-grid > a:hover {
     font-size: 1.05rem;
 }
 
+.contact-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.85rem;
+    margin-top: 1.5rem;
+    max-width: 52rem;
+}
+
+.contact-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1.1rem 1.25rem;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-surface);
+    text-decoration: none;
+    color: inherit;
+    min-width: 0;
+}
+
+.content-section .contact-row:hover,
+main .contact-row:hover {
+    border-color: var(--primary-color);
+    text-decoration: none;
+}
+
+.contact-name {
+    font-family: var(--font-display);
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+.contact-meta {
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.92rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .receipt-status {
     display: flex;
     flex-direction: column;
