@@ -1,22 +1,15 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CLINK Specs - Protocol Documentation</title><link rel="icon" type="image/png" href="favicon.png"><link rel="preload" href="styles.css" as="style" onload="this.rel='stylesheet'"><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script><script defer="defer" src="static.js"></script><link href="static.css" rel="stylesheet"></head><body><div id="nav"></div><div class="container"><header><h1>CLINK Protocol Specifications</h1></header><main><div class="content-section"><label for="spec-select"><strong>Select a spec:</strong></label> <select id="spec-select" class="spec-select"><option value="clink-offers.md">Offers</option><option value="clink-debits.md">Debits</option><option value="clink-manage.md">Manage</option><option value="clink-enroll.md">Enroll</option><option value="clink-beacon.md">Beacon</option></select> <span id="spec-loading" style="margin-left:1em; color:var(--primary-color); display:none;">Loading…</span><div id="spec-error" style="color:#F00; margin-top:1em; display:none;"></div><hr><div id="spec-content" style="background:var(--surface-color); padding:2em; border-radius:10px;"></div></div></main></div><script src="nav.js"></script><script>const GITHUB_RAW_BASES = [
-        'https://raw.githubusercontent.com/shocknet/clink/main/specs/',
-        'https://raw.githubusercontent.com/shocknet/clink/clink-enroll/specs/',
-    ];
+<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CLINK Specs - Protocol Documentation</title><link rel="icon" type="image/png" href="favicon.png"><link rel="preload" href="styles.css" as="style" onload="this.rel='stylesheet'"><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script><script defer="defer" src="static.js"></script><link href="static.css" rel="stylesheet"></head><body><div id="nav"></div><div class="container"><header><h1>CLINK Protocol Specifications</h1></header><main><div class="content-section"><label for="spec-select"><strong>Select a spec:</strong></label> <select id="spec-select" class="spec-select"><option value="clink-offers.md">Offers</option><option value="clink-debits.md">Debits</option><option value="clink-manage.md">Manage</option><option value="clink-enroll.md">Enroll</option><option value="clink-beacon.md">Beacon</option></select> <span id="spec-loading" style="margin-left:1em; color:var(--primary-color); display:none;">Loading…</span><div id="spec-error" style="color:#F00; margin-top:1em; display:none;"></div><hr><div id="spec-content" style="background:var(--surface-color); padding:2em; border-radius:10px;"></div></div></main></div><script src="nav.js"></script><script>const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/shocknet/clink/main/specs/';
     const select = document.getElementById('spec-select');
     const content = document.getElementById('spec-content');
     const loading = document.getElementById('spec-loading');
     const error = document.getElementById('spec-error');
 
     async function fetchSpec(filename) {
-        let lastError = new Error('no spec URL tried');
-        for (const base of GITHUB_RAW_BASES) {
-            const resp = await fetch(base + filename);
-            if (resp.ok) {
-                return resp.text();
-            }
-            lastError = new Error('HTTP ' + resp.status);
+        const resp = await fetch(GITHUB_RAW_BASE + filename);
+        if (!resp.ok) {
+            throw new Error('HTTP ' + resp.status);
         }
-        throw lastError;
+        return resp.text();
     }
 
     async function loadSpec(filename) {

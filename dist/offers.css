@@ -99,7 +99,7 @@ header h1 {
     font-family: var(--font-body);
     font-weight: 500;
     font-size: 1rem;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.65rem;
     border-radius: 6px;
     transition: background 0.15s, color 0.15s, border 0.15s;
     border-bottom: 2.5px solid transparent;
@@ -202,6 +202,16 @@ h3 {
 .intro-section p {
     font-size: 1.1rem;
     opacity: 0.9;
+}
+
+.intro-section .intro-expand {
+    color: var(--accent-yellow);
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    opacity: 1;
+    margin: 0 0 1.2rem 0;
 }
 
 .intro-section .intro-definition {
@@ -383,6 +393,7 @@ hr {
 }
 
 .qr-code-container {
+    position: relative;
     margin-top: 1rem;
     min-height: 272px;
     display: flex;
@@ -392,6 +403,63 @@ hr {
     border: 1px solid var(--border-color);
     border-radius: var(--radius-surface);
     padding: 8px;
+    overflow: hidden;
+}
+
+.qr-pay-link {
+    display: none;
+    line-height: 0;
+    font-weight: 400;
+}
+
+.qr-pay-link.is-live {
+    display: block;
+}
+
+.results-section .qr-pay-link:hover {
+    color: inherit;
+    text-decoration: none;
+}
+
+.qr-code-container.receipt-paid canvas {
+    opacity: 0.12;
+}
+
+.qr-code-container.receipt-paid .qr-pay-link,
+.qr-code-container.receipt-expired .qr-pay-link {
+    pointer-events: none;
+}
+
+.qr-code-container.receipt-expired canvas {
+    opacity: 0.35;
+}
+
+.qr-code-container.receipt-paid::after {
+    content: "Paid";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent-yellow);
+    font-family: var(--font-display);
+    font-size: 2.6rem;
+    font-weight: 400;
+    letter-spacing: 0.06em;
+    pointer-events: none;
+}
+
+.results-section button.copy-invoice {
+    display: none;
+    width: auto;
+    height: auto;
+    margin: 0.6rem 0 0 auto;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.9rem;
+}
+
+.results-section button.copy-invoice:not([hidden]) {
+    display: block;
 }
 
 #qr-placeholder {
@@ -441,17 +509,9 @@ main a:hover, .intro-section a:hover, .results-section a:hover, .decoded-data-co
         align-items: flex-start;
         gap: 0.5rem;
     }
-    .nav-logo-link {
-        margin-left: 0.5em;
-        margin-right: 0.7rem;
-    }
     .nav-logo-img {
         height: 24px;
-        width: 24px;
-        margin-right: 0.4em;
-    }
-    .nav-logo-text {
-        font-size: 1rem;
+        width: auto;
     }
     .nav-link {
         font-size: 0.95rem;
@@ -479,15 +539,7 @@ main a:hover, .intro-section a:hover, .results-section a:hover, .decoded-data-co
 
     .nav-logo-img {
         height: 24px;
-        width: 24px;
-        margin-right: 0.4em;
-    }
-    .nav-logo-text {
-        font-size: 1rem;
-    }
-    .nav-logo-link {
-        margin-left: 0.5em;
-        margin-right: 0.7rem;
+        width: auto;
     }
 
     .content-section {
@@ -584,6 +636,8 @@ main a:hover, .intro-section a:hover, .results-section a:hover, .decoded-data-co
 
 .nav-content-wrapper {
     max-width: 1100px;
+    width: 100%;
+    box-sizing: border-box;
     margin: 0 auto;
     padding: 0 2.5vw;
     display: flex;
@@ -591,23 +645,35 @@ main a:hover, .intro-section a:hover, .results-section a:hover, .decoded-data-co
     justify-content: space-between;
 }
 
+@media (max-width: 1100px) {
+    .nav-content-wrapper {
+        max-width: 96vw;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-content-wrapper {
+        max-width: 100vw;
+        padding: 0 1rem;
+    }
+}
+
 .nav-left {
     display: flex;
     align-items: center;
     gap: 1.5rem;
-}
-
-.nav-group {
-    display: flex;
-    align-items: center;
-    gap: 1.2rem;
+    flex: 1;
+    min-width: 0;
 }
 
 .nav-links {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 1.2rem;
+    justify-content: space-between;
+    flex: 1;
+    gap: 0.4rem;
+    min-width: 0;
 }
 
 .nav-burger {
@@ -648,6 +714,8 @@ main a:hover, .intro-section a:hover, .results-section a:hover, .decoded-data-co
         box-shadow: 0 6px 24px 0 #0005;
         flex-direction: column;
         align-items: flex-start;
+        justify-content: flex-start;
+        flex: none;
         gap: 0.2em;
         padding: 0.7em 1em 1em 1em;
         display: none;
@@ -835,20 +903,105 @@ main .demo-card-grid > a:hover {
     font-size: 1.05rem;
 }
 
+.contact-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 0.85rem;
+    margin-top: 1.5rem;
+    max-width: 52rem;
+}
+
+.contact-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 1.1rem 1.25rem;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-surface);
+    text-decoration: none;
+    color: inherit;
+    min-width: 0;
+}
+
+.content-section .contact-row:hover,
+main .contact-row:hover {
+    border-color: var(--primary-color);
+    text-decoration: none;
+}
+
+.contact-name {
+    font-family: var(--font-display);
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+.contact-meta {
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.92rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .receipt-status {
-    margin-top: 0.9rem;
-    font-weight: 500;
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    margin-top: 0.85rem;
+}
+
+.receipt-status[hidden] {
+    display: none;
+}
+
+.receipt-line {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .receipt-status.waiting {
+    color: var(--accent-yellow);
+    font-weight: 600;
+}
+
+.receipt-status.waiting .receipt-line {
+    gap: 0.55rem;
+}
+
+.receipt-status.waiting .receipt-line::before {
+    content: "";
+    width: 0.75em;
+    height: 0.75em;
+    border: 2px solid var(--border-color);
+    border-top-color: var(--accent-yellow);
+    border-radius: 50%;
+    animation: receipt-spin 0.7s linear infinite;
+}
+
+.receipt-countdown {
     color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 400;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.04em;
 }
 
 .receipt-status.paid {
-    color: var(--accent-yellow);
+    display: none;
 }
 
 .receipt-status.error {
     color: #ff6b6b;
+    font-weight: 600;
+}
+
+@keyframes receipt-spin {
+    to { transform: rotate(360deg); }
 } 

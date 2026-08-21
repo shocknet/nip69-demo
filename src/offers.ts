@@ -79,7 +79,7 @@ function watchInvoiceExpiry(bolt11: string): void {
     clearExpireTimer();
     invoiceEndsAt = invoiceExpiresAtMs(bolt11) ?? Date.now() + 3600_000;
     tickExpiry();
-    if (receiptStatus.classList.contains('error')) {
+    if (receiptStatus.classList.contains('error') || receiptStatus.classList.contains('paid')) {
         return;
     }
     expireTimer = setInterval(tickExpiry, 1000);
@@ -123,6 +123,8 @@ function setReceipt(state: ReceiptState, text = ''): void {
     qrContainer.classList.toggle('receipt-expired', state === 'error');
     if (state === 'paid') {
         clearExpireTimer();
+        offerSdk?.Stop();
+        offerSdk = null;
         resultHeader.textContent = 'Paid';
     }
 }
@@ -223,7 +225,11 @@ async function handleGetInvoice(): Promise<void> {
         offerSdk = sdkFromPointer(decodedOffer.pubkey, decodedOffer.relay);
         const response = await offerSdk.Noffer(
             { offer: decodedOffer.offer, amount_sats: amountSats },
-            () => setReceipt('paid', 'Paid'),
+            (receipt) => {
+                if (receipt.res === 'ok') {
+                    setReceipt('paid', 'Paid');
+                }
+            },
         );
 
         if ('bolt11' in response && typeof response.bolt11 === 'string') {
